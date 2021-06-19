@@ -13,5 +13,7 @@ interface CErc20 {
 
     function balanceOf(address) external view returns (uint);
 
-    function balanceOfUnderlying(address) external view returns (uint);
+    function balanceOfUnderlying(address) external returns (uint);
+
+    function exchangeRateStored() external view returns (uint);
 }
