@@ -1,12 +1,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.1;
+
+import "./Vault.sol";
+
 abstract contract Yielder {
 
-    function deposit(uint256 amount) external virtual;
+    constructor(Vault _vault) {
+        vault = _vault;
+    }
 
-    function balance() external view virtual returns (uint256);
+    Vault public vault;
 
-    function withdraw(uint256 amount) external virtual;
+    function deposit(address, uint256) external virtual;
 
+    function balanceOf(address) external view virtual returns (uint256);
+
+    function withdraw(address, uint256) external virtual;
+
+    modifier onlyFromVault() {
+        require(msg.sender == address(vault), "This function can only be called from the parent vault");
+        _;
+    }
 
 }

@@ -10,20 +10,6 @@ contract USDC_COMP_Yielder {
     ERC20 USDC = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     CErc20 cUSDC = CErc20(0x39AA39c021dfbaE8faC545936693aC917d5E7563);
 
-    function usdcBalance() public view returns (uint256) {
-        return USDC.balanceOf(address(this));
-    }
-
-    function cusdcBalance() public view returns (uint256) {
-        return cUSDC.balanceOf(address(this));
-    }
-
-    function withdrawUsdc() public {
-        USDC.transfer(msg.sender, USDC.balanceOf(address(this)));
-    }
-
-    /* Yielder interface */
-
     function deposit(uint256 amount) external {
         require(USDC.allowance(msg.sender, address(this)) == amount, "Can't retrieve USDC from vault");
         USDC.transferFrom(msg.sender, address(this), amount);
@@ -32,7 +18,7 @@ contract USDC_COMP_Yielder {
     }
 
     function balance() external view returns (uint256) {
-        return cUSDC.balanceOf(address(this)) * cUSDC.exchangeRateStored;
+        return cUSDC.balanceOf(address(this)) * cUSDC.exchangeRateStored() / 1e18;
     }
 
     function withdraw(uint256 amount) external {

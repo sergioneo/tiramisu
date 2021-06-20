@@ -3,20 +3,22 @@ pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Yielder.sol";
-import "./USDC_COMP_Yielder.sol";
+import "./USDC_AAVE_Yielder.sol";
 
-contract USDC_COMP_Proxy is Yielder {
+contract USDC_AAVE_Proxy is Yielder {
 
-    mapping(address => USDC_COMP_Yielder) yielders;
+    mapping(address => USDC_AAVE_Yielder) yielders;
     ERC20 USDC = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+
+    constructor(Vault _vault) Yielder(_vault) {}
 
     /* Yielder interface */
 
-    function deposit(address addr, uint256 amount) external override {
-        require(USDC.allowance(msg.sender, address(this)) == amount, "Can't retrieve USDC from vault");
-        USDC_COMP_Yielder yielder;
+    function deposit(address addr, uint256 amount) external override onlyFromVault {
+        require(USDC.allowance(msg.sender, address(this)) >= amount, "Can't retrieve USDC from vault");
+        USDC_AAVE_Yielder yielder;
         if (address(yielders[addr]) == address(0)) {
-            yielder = new USDC_COMP_Yielder();
+            yielder = new USDC_AAVE_Yielder();
             yielders[addr] = yielder;
         } else {
             yielder = yielders[addr];
@@ -26,7 +28,7 @@ contract USDC_COMP_Proxy is Yielder {
         yielder.deposit(amount);
     }
 
-    function balance(address addr) external view override returns (uint256) {
+    function balanceOf(address addr) external view override returns (uint256) {
         if (address(yielders[addr]) == address(0)) {
             return 0;
         } else {
@@ -34,7 +36,7 @@ contract USDC_COMP_Proxy is Yielder {
         }
     }
 
-    function withdraw(address addr, uint256 amount) external override {
+    function withdraw(address addr, uint256 amount) external override onlyFromVault {
         require(address(yielders[addr]) != address(0), "No yielder for this address");
         require(yielders[addr].balance() <= amount, "That amount exceeds the current balance");
         yielders[addr].withdraw(amount);
