@@ -1,0 +1,18 @@
+{
+  "merchantId": 1,
+  "orderId": "8c2f497f-6426-4a60-9e10-30f9ce901ba8",
+  "items": [
+    {
+      "SKU": "11223344",
+      "title": "Cool t-shirt",
+      "price": 5990000
+    }
+  ],
+  "currency": "USDC",
+  "timestamp": 1624601965,
+  "price": 5990000,
+  "decimals": 6,
+  "status": "PENDING",
+  "signature": "0xd16db59dc120fb963087a041a85463400a28a3bfcc7a201faa0848a02227bf1d17e807bd88ae83fe711866ec358e2fccf4904ce89c52bea294089845c751f5dd1b",
+  "payeeWallet": "0xe25a861E1210f777b061790d03E3dFebCFf2212A"
+}

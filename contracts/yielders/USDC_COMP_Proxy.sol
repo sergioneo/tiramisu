@@ -8,9 +8,9 @@ import "./USDC_COMP_Yielder.sol";
 contract USDC_COMP_Proxy is Yielder {
 
     mapping(address => USDC_COMP_Yielder) yielders;
-    ERC20 USDC = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    ERC20 USDC = ERC20(0x07865c6E87B9F70255377e024ace6630C1Eaa37F);
 
-    constructor(Vault _vault) Yielder(_vault) {}
+    constructor(Vault _vault, string memory _CID) Yielder(_vault, _CID) {}
 
     /* Yielder interface */
 
@@ -38,7 +38,7 @@ contract USDC_COMP_Proxy is Yielder {
 
     function withdraw(address addr, uint256 amount) external override onlyFromVault {
         require(address(yielders[addr]) != address(0), "No yielder for this address");
-        require(yielders[addr].balance() <= amount, "That amount exceeds the current balance");
+        require(yielders[addr].balance() >= amount, "That amount exceeds the current balance");
         yielders[addr].withdraw(amount);
         USDC.transfer(msg.sender, amount);
     }

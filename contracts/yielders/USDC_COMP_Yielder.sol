@@ -7,8 +7,8 @@ import "./Yielder.sol";
 
 contract USDC_COMP_Yielder {
 
-    ERC20 USDC = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    CErc20 cUSDC = CErc20(0x39AA39c021dfbaE8faC545936693aC917d5E7563);
+    ERC20 USDC = ERC20(0x07865c6E87B9F70255377e024ace6630C1Eaa37F);
+    CErc20 cUSDC = CErc20(0x2973e69b20563bcc66dC63Bde153072c33eF37fe);
 
     function deposit(uint256 amount) external {
         require(USDC.allowance(msg.sender, address(this)) == amount, "Can't retrieve USDC from vault");

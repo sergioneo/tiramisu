@@ -6,67 +6,69 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 abstract contract Vault {
 
-    mapping(uint256 => Yielder) public yielderRegistry;
-    mapping(address => uint256) public yielderPreference;
-    uint256 public yieldersRegistrySize = 0;
+    mapping(address => address) public yielderPreference;
+    address public defaultYielder;
 
     ERC20 public ASSET;
-    string CID;
+    string public CID;
 
     constructor(ERC20 _asset, string memory _cid) {
         ASSET = _asset;
         CID = _cid;
     }
 
-    function onboardYielder(Yielder _yielder) public {
-        require(address(_yielder.vault()) == address(this), "Yielder has to be setup for this vault");
-        yieldersRegistrySize++;
-        yielderRegistry[yieldersRegistrySize] = _yielder;
+    function setDefaultYielder(address _yielder) public onlyDao {
+        defaultYielder = _yielder;
     }
 
     function deposit(uint256 amount) public registryHasYielders {
         address user = msg.sender;
         require(ASSET.allowance(user, address(this)) >= amount, "Can't access funds from address");
         ASSET.transferFrom(user, address(this), amount);
-        if (yielderPreference[user] == 0) {
-            yielderPreference[user] = 1;
+        if (yielderPreference[user] == address(0)) {
+            yielderPreference[user] = defaultYielder;
         }
-        Yielder yielder = yielderRegistry[yielderPreference[user]];
+        Yielder yielder = Yielder(yielderPreference[user]);
         ASSET.approve(address(yielder), amount);
         yielder.deposit(user, amount);
     }
 
     function withdraw(uint256 amount) public registryHasYielders {
         address user = msg.sender;
-        require(yielderPreference[user] != 0, "User is not onboarded with any yielders");
-        Yielder yielder = yielderRegistry[yielderPreference[user]];
+        require(yielderPreference[user] != address(0), "User is not onboarded with any yielders");
+        Yielder yielder = Yielder(yielderPreference[user]);
         require(yielder.balanceOf(user) > amount, "Not enough funds to withdraw");
         yielder.withdraw(user, amount);
         ASSET.transfer(msg.sender, amount);
     }
 
     function balanceOf(address user) public view registryHasYielders returns (uint256) {
-        require(yielderPreference[user] != 0, "User is not onboarded with any yielders");
-        Yielder yielder = yielderRegistry[yielderPreference[user]];
+        require(yielderPreference[user] != address(0), "User is not onboarded with any yielders");
+        Yielder yielder = Yielder(yielderPreference[user]);
         return yielder.balanceOf(user);
     }
 
-    function switchYielders(uint256 newYielderCode) public registryHasYielders {
+    function switchYielders(address newYielderAddress) public registryHasYielders {
         address user = msg.sender;
-        require(yielderPreference[user] != 0, "User is not onboarded with any yielders");
-        require(address(yielderRegistry[newYielderCode]) != address(0), "That yielder doesn't exist");
-        Yielder oldYielder = yielderRegistry[yielderPreference[user]];
+        require(yielderPreference[user] != address(0), "User is not onboarded with any yielders");
+        require(newYielderAddress != address(0), "Can't set the yielder to address 0");
+        Yielder oldYielder = Yielder(yielderPreference[user]);
         require(oldYielder.balanceOf(user) > 0, "Not enough funds to switch");
         uint256 amountAvailable = oldYielder.balanceOf(user);
         oldYielder.withdraw(user, amountAvailable);
-        Yielder newYielder = yielderRegistry[newYielderCode];
-        yielderPreference[user] = newYielderCode;
+        Yielder newYielder = Yielder(newYielderAddress);
+        require(newYielder.vault() == this, "This yielder was not made for this vault");
+        yielderPreference[user] = newYielderAddress;
         ASSET.approve(address(newYielder), amountAvailable);
         newYielder.deposit(user, amountAvailable);
     }
 
     modifier registryHasYielders() {
-        require(yieldersRegistrySize >= 1, "No yielders in registry");
+        require(defaultYielder != address(0), "No yielders in registry");
+        _;
+    }
+
+    modifier onlyDao() {
         _;
     }
 

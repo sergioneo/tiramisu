@@ -1,0 +1,11 @@
+{
+  "name": "USDC AAVE Yielder",
+  "APY": "Variable",
+  "type": "LOSSLESS",
+  "coinType": "stable",
+  "description": "Earn rewards by supplying your funds into the AAVE liquidity market, and withdrawing them back when you need them",
+  "tokens": ["USDC", "aUSDC"],
+  "logo": "https://cryptologos.cc/logos/aave-aave-logo.svg?v=010",
+  "author": "0xABCDEF",
+  "url": "https://aave.com/"
+}

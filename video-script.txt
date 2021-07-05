@@ -1,0 +1,67 @@
+Hi, welcome to Tiramisu!
+
+The inspiration behind this project is the recent adoption of Bitcoin as legal
+tender by El Salvador. Cryptocurrencies and decentralized finance offer tools
+never available before to every investor, but they do require financial
+education and technological knowledge. In contrast, only 30% of the population in
+El Salvador have bank accounts. Exposing these new participants to the risks
+of cryptocurrencies and DeFi, without access to the proper tools, could be a terrible
+thing.
+
+This is where Tiramisu comes in. Tiramisu is a multi-layer, localization first, extendable open-source money protocol
+that replaces savings accounts and debit cards, and offers tools to all levels of financial knowledge.
+
+Let's start with an example.
+
+Consider Dona Maria, she is from Chile and does not know anything about cryptocurrencies
+or DeFi. In fact, she has been stuck with a 0.01% APY savings account in her bank for the last
+30 years, rendering her earnings to practically zero.
+
+In Tiramisu, she stores her funds in USDC, and these funds grow at a faster rate than they do in her
+bank. She never loses money, sometimes the rates might be a little slower, sometimes faster, but it
+always goes up. Behind the curtains, her USDC is deposited into Compound, and every time she withdraws
+money or pays for something, her funds are always available.
+
+The project is called Tiramisu because it has multiple layers, each one of them representing
+a new level of abstraction, and intended for the next step in the financial education path.
+Let's look at all of the layers.
+
+Layer 1: Money account
+(Show website)
+Tiramisu's entry point for all users is a wallet, similar to a fiat savings account,
+accessible through a mobile application or a website. Users can view the amount of money
+they have in their own local currency, or whatever currency they prefer. The UI was
+designed to be as simple as possible.
+
+Layer 2: Payments
+Having a crypto wallet is not useful if there's no way of using it.
+Tiramisu proposes a payment flow that any merchant can adhere to. Tiramisu uses IPFS
+and QR codes to communicate the entire receipt of a purchase to the buyer, from where they can
+go ahead and pay the order. This enables both buyers and sellers to have a central on-chain point
+of storage to view all their orders, from any merchant, forever. Let's see the process
+in action.
+
+This process can also be used for online sales, as there's no need for physical Contact between the parties
+
+Layer 3: Vaults
+Wallets are backed in smart contracts called Vaults, which are pools of ERC20 tokens. The default vault is
+the USDC vault, but more experienced users can change vaults whenever they want. For example, if you know
+the risks associated with keeping your money in BTC, with the press of a button you can switch all your funds
+into a WBTC vault.
+
+Layer 4: Yielders
+Finally, the last layer of the project is the Yielder layer. Yielders are smart contracts in charge of
+getting rewards for the funds stored in the vaults. Some yielders are no-loss, like the Compound yielder we mentioned earlier,
+but some are more complex (show arbitrage diagram). Users can switch yielders and their funds are moved seamlessly from
+the Tiramisu app.
+
+One of the main benefits of Tiramisu is that it is open source and extendable. The Tiramisu DAO will provide a "known registry"
+for vaults and yielders, but users can develop their own smart contracts that adhere to the interface, and use those to take in
+more risks, and possibly higher rewards. For example, if a DAI vault with an AAVE yielder sounds too boring, you can always switch it
+to a SHIBA INU vault with a crazy flash loan yielder.
+
+Custom Vaults and Yielders are submitted to the DAO to be added to the known registry, where all the DAO members will closely
+examine the legitimacy of the code and vote.
+
+We believe the future is coming quickly, and if we want the future to stay, we need
+to provide the right tooling for mass adoption. This is Tiramisu.

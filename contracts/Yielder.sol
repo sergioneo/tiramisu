@@ -5,11 +5,13 @@ import "./Vault.sol";
 
 abstract contract Yielder {
 
-    constructor(Vault _vault) {
+    constructor(Vault _vault, string memory _CID) {
         vault = _vault;
+        CID = _CID;
     }
 
     Vault public vault;
+    string public CID;
 
     function deposit(address, uint256) external virtual;
 

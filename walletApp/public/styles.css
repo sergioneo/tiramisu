@@ -1,0 +1,49 @@
+/* Header Parallax Element Style*/ 
+.paral {
+height: 100vh;
+background-attachment: fixed;
+background-size: cover;
+background-position: top center;
+}
+/* Remove Bottom Margin from Jumbotron */
+.jumbotron{margin-bottom: 0;}
+
+/* Footer */
+.wn-footer {
+padding: 2.5rem 0;
+text-align: center;
+color: white;
+background-color: #607D8B;
+border-top: .05rem solid #e5e5e5;
+}
+
+.wn-footer a {
+color: yellow;
+}
+
+.project-body {
+	background-color: #8ba7ec;
+	background-image: linear-gradient(135deg, #8ba7ec 0%, #6b70de 100%);
+	color: white;
+}
+
+.project-body .card {
+	color: rgb(33, 37, 41);
+}
+
+.project-body .card .card-title {
+	font-size: 1em;
+}
+
+.project-body .card .card-subtitle {
+	font-size: 0.75em;
+}
+
+.project-collaborators {
+	background-image: linear-gradient( 94.3deg,  rgba(26,33,64,1) 10.9%, rgba(81,84,115,1) 87.1% );
+	color: white;
+}
+
+.project-action {
+	background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+}

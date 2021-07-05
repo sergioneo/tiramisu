@@ -1,0 +1,11 @@
+{
+  "name": "USDC Compound Yielder",
+  "APY": "Variable",
+  "type": "LOSSLESS",
+  "coinType": "stable",
+  "description": "Earn rewards by supplying your funds into the Compound protocol, and withdrawing them back when you need them",
+  "tokens": ["USDC", "cUSDC"],
+  "logo": "https://cryptologos.cc/logos/compound-comp-logo.png",
+  "author": "0xABCDEF",
+  "url": "https://compound.finance/"
+}
