@@ -37,7 +37,7 @@ abstract contract Vault {
         address user = msg.sender;
         require(yielderPreference[user] != address(0), "User is not onboarded with any yielders");
         Yielder yielder = Yielder(yielderPreference[user]);
-        require(yielder.balanceOf(user) > amount, "Not enough funds to withdraw");
+        require(yielder.balanceOf(user) >= amount, "Not enough funds to withdraw");
         yielder.withdraw(user, amount);
         ASSET.transfer(msg.sender, amount);
     }

@@ -115,7 +115,7 @@ class App extends Component {
     return (
       <div className="container-fluid">
       <Navbar bg="light" variant="light" expand="lg" className="row">
-        <Navbar.Brand href="/" className="logo"><img src="tiramisu.png" className="logoimg"/> Tiramisu</Navbar.Brand>
+        <Navbar.Brand href="/" className="logo"><img src="http://localhost:3000/tiramisu.png" className="logoimg"/> Tiramisu</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">

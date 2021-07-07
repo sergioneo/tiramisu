@@ -3,7 +3,7 @@ pragma solidity ^0.8.1;
 
 import "./Vault.sol";
 import "./CanSwap.sol";
-import "./dependencies/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -17,7 +17,11 @@ contract Wallet is Ownable, CanSwap {
     mapping(uint256 => string) public ordersReceived;
     uint256 public numberOfOrdersReceived = 0;
 
-    mapping(string => bool) public receivedPayments;
+    enum PaymentStatus{ NONE, AUTHORIZED, COMPLETED }
+
+    mapping(string => PaymentStatus) public paymentStatus;
+    mapping(string => address) public payer;
+    mapping(string => uint256) public orderAmount;
 
     constructor(Vault _vault) {
         BACKING_VAULT = _vault;
@@ -74,7 +78,7 @@ contract Wallet is Ownable, CanSwap {
         uint256 amount,
         string memory orderId,
         bytes memory signature
-    ) public {
+    ) public onlyOwner {
         // We check if the asset backing the payee's wallet is different from ours
         ERC20 targetAsset = payeeWallet.BACKING_VAULT().ASSET();
         uint256 hasToSend = amount;
@@ -83,24 +87,34 @@ contract Wallet is Ownable, CanSwap {
         }
         require(BACKING_VAULT.balanceOf(address(this)) >= hasToSend, "Not enough funds to pay");
         BACKING_VAULT.withdraw(hasToSend);
+        require(BACKING_VAULT.ASSET().balanceOf(address(this)) >= hasToSend, "Amounts withdrawn are not enough");
         if (targetAsset != BACKING_VAULT.ASSET()) {
             swap(hasToSend, amount, BACKING_VAULT.ASSET(), targetAsset);
         }
         targetAsset.approve(address(payeeWallet), amount);
-        payeeWallet.receivePayment(cid, amount, orderId, signature);
+        payeeWallet.authorizePayment(cid, amount, orderId, signature);
         ordersPaid[numberOfOrdersPaid] = cid;
         numberOfOrdersPaid++;
     }
 
-    function receivePayment(string memory cid, uint256 amount, string memory orderId, bytes memory signature) public {
-        require(!receivedPayments[orderId], "PAYMENT WAS ALREADY RECEIVED");
-        require(BACKING_VAULT.ASSET().allowance(msg.sender, address(this)) >= amount, "Amount not sent");
+    function authorizePayment(string memory cid, uint256 amount, string memory orderId, bytes memory signature) public {
+        require(paymentStatus[cid] == PaymentStatus.NONE, "Payment was processed");
+        require(BACKING_VAULT.ASSET().allowance(msg.sender, address(this)) >= amount, "Amount not authorized");
         require(validateSignature(amount, orderId, signature), "Signature doesn't match");
-        BACKING_VAULT.ASSET().transferFrom(msg.sender, address(this), amount);
-        receivedPayments[orderId] = true;
+        paymentStatus[cid] = PaymentStatus.AUTHORIZED;
+        payer[cid] = msg.sender;
+        orderAmount[cid] = amount;
+    }
+
+    function completePayment(string memory cid) public onlyOwner {
+        require(paymentStatus[cid] == PaymentStatus.AUTHORIZED, "Payment is not in the AUTHORIZED stage");
+        require(payer[cid] != address(0), "Invalid payer");
+        require(BACKING_VAULT.ASSET().allowance(payer[cid], address(this)) >= orderAmount[cid], "Amount not authorized");
+        BACKING_VAULT.ASSET().transferFrom(payer[cid], address(this), orderAmount[cid]);
         _deposit();
         ordersReceived[numberOfOrdersReceived] = cid;
         numberOfOrdersReceived++;
+        paymentStatus[cid] = PaymentStatus.COMPLETED;
     }
 
     function validateSignature(uint256 amount, string memory orderId, bytes memory signature) public view returns (bool) {

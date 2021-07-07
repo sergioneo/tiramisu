@@ -2,7 +2,7 @@
 pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./dependencies/cErc20.sol";
+import "./dependencies/CErc20.sol";
 import "./Yielder.sol";
 
 contract USDC_COMP_Yielder {

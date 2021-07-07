@@ -20,14 +20,13 @@ contract CanSwap {
     }
 
     function swap(uint256 maxIn, uint256 amountOut, ERC20 inToken, ERC20 outToken) public {
-        require(inToken.transferFrom(msg.sender, address(this), maxIn), 'transferFrom failed.');
         require(inToken.approve(address(uniswapRouter), maxIn), 'approve failed.');
         // amountOutMin must be retrieved from an oracle of some kind
         address[] memory path = new address[](3);
         path[0] = address(inToken);
         path[1] = address(uniswapRouter.WETH());
         path[2] = address(outToken);
-        uniswapRouter.swapTokensForExactTokens(amountOut, maxIn, path, msg.sender, block.timestamp + 30);
+        uniswapRouter.swapTokensForExactTokens(amountOut, maxIn, path, address(this), block.timestamp + 30);
     }
 
     function getExpectedAmount(uint256 amount, ERC20 inToken, ERC20 outToken) public view returns (uint256) {
